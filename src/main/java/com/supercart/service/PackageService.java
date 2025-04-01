@@ -23,24 +23,24 @@ public class PackageService {
     private final CurrencyConverter currencyConverter;
 
     public PackageResponse createPackage(CreatePackageRequest request) {
-        List<String> productIds = request.getProductIds();
+        List<String> productIds = request.productIds();
         List<Product> allProducts = productServiceClient.getAllProducts();
 
         List<Product> productsInPackage = productIds.stream()
                 .map(productId -> allProducts.stream()
-                        .filter(p -> p.getId().equals(productId))
+                        .filter(p -> p.id().equals(productId))
                         .findFirst()
                         .orElseThrow(() -> new InvalidProductException("Invalid product ID: " + productId)))
                 .collect(Collectors.toList());
 
         BigDecimal totalUsd = productsInPackage.stream()
-                .map(Product::getUsdPrice)
+                .map(Product::usdPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         PackageEntity entity = new PackageEntity();
         entity.setId(UUID.randomUUID().toString());
-        entity.setName(request.getName());
-        entity.setDescription(request.getDescription());
+        entity.setName(request.name());
+        entity.setDescription(request.description());
         entity.setProductIds(productIds);
         entity.setPriceUSD(totalUsd);
 
@@ -55,7 +55,7 @@ public class PackageService {
         List<Product> allProducts = productServiceClient.getAllProducts();
         List<Product> products = entity.getProductIds().stream()
                 .map(productId -> allProducts.stream()
-                        .filter(p -> p.getId().equals(productId))
+                        .filter(p -> p.id().equals(productId))
                         .findFirst()
                         .orElseThrow(() -> new RuntimeException("Product not found: " + productId)))
                 .collect(Collectors.toList());
@@ -76,22 +76,22 @@ public class PackageService {
         PackageEntity existingEntity = packageRepository.findById(id)
                 .orElseThrow(() -> new PackageNotFoundException(id));
 
-        List<String> productIds = request.getProductIds();
+        List<String> productIds = request.productIds();
         List<Product> allProducts = productServiceClient.getAllProducts();
 
         List<Product> productsInPackage = productIds.stream()
                 .map(productId -> allProducts.stream()
-                        .filter(p -> p.getId().equals(productId))
+                        .filter(p -> p.id().equals(productId))
                         .findFirst()
                         .orElseThrow(() -> new InvalidProductException("Invalid product ID: " + productId)))
                 .collect(Collectors.toList());
 
         BigDecimal totalUsd = productsInPackage.stream()
-                .map(Product::getUsdPrice)
+                .map(Product::usdPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        existingEntity.setName(request.getName());
-        existingEntity.setDescription(request.getDescription());
+        existingEntity.setName(request.name());
+        existingEntity.setDescription(request.description());
         existingEntity.setProductIds(productIds);
         existingEntity.setPriceUSD(totalUsd);
 
@@ -119,7 +119,7 @@ public class PackageService {
                 entity.getName(),
                 entity.getDescription(),
                 productServiceClient.getAllProducts().stream()
-                        .filter(p -> entity.getProductIds().contains(p.getId()))
+                        .filter(p -> entity.getProductIds().contains(p.id()))
                         .collect(Collectors.toList()),
                 currencyConverter.convertUsdToCurrency(entity.getPriceUSD(), currency),
                 currency
