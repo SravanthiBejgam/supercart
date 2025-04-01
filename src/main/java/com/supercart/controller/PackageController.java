@@ -44,6 +44,5 @@ public class PackageController {
     @GetMapping
     public ResponseEntity<List<PackageResponse>> getAllPackages(
             @RequestParam(required = false) String currency) {
-        System.out.println("Hello==========>");
         return ResponseEntity.ok(packageService.listAllPackages(currency));
     }}
