@@ -4,6 +4,7 @@ import com.supercart.dto.CreatePackageRequest;
 import com.supercart.dto.PackageResponse;
 import com.supercart.exception.InvalidProductException;
 import com.supercart.exception.PackageNotFoundException;
+import com.supercart.exception.ProductNotFoundException;
 import com.supercart.model.PackageEntity;
 import com.supercart.model.Product;
 import com.supercart.repository.PackageRepository;
@@ -57,7 +58,7 @@ public class PackageService {
                 .map(productId -> allProducts.stream()
                         .filter(p -> p.id().equals(productId))
                         .findFirst()
-                        .orElseThrow(() -> new RuntimeException("Product not found: " + productId)))
+                        .orElseThrow(() -> new ProductNotFoundException("Product not found: " + productId)))
                 .collect(Collectors.toList());
 
         BigDecimal convertedPrice = currencyConverter.convertUsdToCurrency(entity.getPriceUSD(), currency == null ? "USD" : currency);

@@ -2,6 +2,7 @@ package com.supercart.service;
 
 import com.supercart.model.Product;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,23 +20,23 @@ public class ProductServiceClient {
     private final RestTemplate restTemplate;
     private static final String PRODUCT_SERVICE_URL = "https://product-service.herokuapp.com/api/v1/products";
 
-    public ProductServiceClient(@Qualifier("productServiceRestTemplate") RestTemplate restTemplate) {
+    /*public ProductServiceClient(@Qualifier("productServiceRestTemplate") RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }*/
+
+
+    public ProductServiceClient(
+            @Qualifier("productServiceRestTemplate") RestTemplate restTemplate
+    ) {
         this.restTemplate = restTemplate;
     }
 
     public List<Product> getAllProducts() {
-        HttpHeaders headers = new HttpHeaders();
-        String auth = "user:pass";
-        String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
-        headers.add("Authorization", "Basic " + encodedAuth);
-        HttpEntity<?> entity = new HttpEntity<>(headers);
-
-        ResponseEntity<List<Product>> response = restTemplate.exchange(
+        return restTemplate.exchange(
                 PRODUCT_SERVICE_URL,
                 HttpMethod.GET,
-                entity,
-                new ParameterizedTypeReference<>() {}
-        );
-        return response.getBody();
+                null,
+                new ParameterizedTypeReference<List<Product>>() {}
+        ).getBody();
     }
 }

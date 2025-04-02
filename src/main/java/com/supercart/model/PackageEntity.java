@@ -3,7 +3,6 @@ package com.supercart.model;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,4 +17,5 @@ public class PackageEntity {
     @ElementCollection
     private List<String> productIds;
     private BigDecimal priceUSD;
+
 }
