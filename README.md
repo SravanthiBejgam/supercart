@@ -52,9 +52,31 @@ http://localhost:8080/api/packages
 
 2. Get Package with Currency Conversion:
    ```bash
-   curl "http://localhost:8080/api/packages/1?currency=EUR"
+   curl --location 'http://localhost:8080/api/packages?currency=GBP'
 
-3. Available Products:
+3. Get Package with ID:
+   ```bash
+   curl --location 'http://localhost:8080/api/packages/bfc2c1d0-d822-4ff4-b5de-5ed75b2aef8d'
+4. PUT Request:
+   ```bash
+   curl --location --request PUT 'http://localhost:8080/api/packages/bfc2c1d0-d822-4ff4-b5de-5ed75b2aef8d' \
+   --header 'Content-Type: application/json' \
+   --data '{
+   "name" : "Shield",
+   "description" : "packagepkg 1",
+   "productIds":["VqKb4tyj9V6i"]
+   }'
+5. DELETE Request:
+   ```bash
+   curl --location --request DELETE 'http://localhost:8080/api/packages/bfc2c1d0-d822-4ff4-b5de-5ed75b2aef8d' \
+   --header 'Content-Type: application/json' \
+   --data '{
+   "name" : "Shield",
+   "description" : "packagepkg 1",
+   "productIds":["VqKb4tyj9V6i"]
+   }'
+
+6. Available Products:
    ```bash
    Shield  (ID: VqKb4tyj9V6i) - $1149
    Helmet  (ID: DXSQpv6XVeJm) - $999
@@ -67,7 +89,11 @@ http://localhost:8080/api/packages
    docker build -t package-service .
 2. Run docker Container:
    ```bash
-   docker run -d -p 8080:8080 --name package-service-container package-service
+   docker run -d -p 8080:8080 \
+   -e PRODUCT_SERVICE_USER=<username> \
+   -e PRODUCT_SERVICE_PASSWORD=<password> \
+   --name package-service-container \
+   package-service
 
 ### Database Console:
 Access H2 console during development:
